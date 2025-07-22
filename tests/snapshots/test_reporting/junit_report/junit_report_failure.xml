@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuite name='langfuse-eval' tests='1'>
+<testcase classname='langfuse' name='failing-snapshot-item' time='1.0'>
+    <properties>
+        <property name='evals.trace_id' value='failing-snapshot-trace' />
+        <property name='evals.cost' value='0.1' />
+        <property name='evals.scores.accuracy.value' value='0.5' />
+    </properties>
+    <failure message='Test case failed. success is either missing or its value is not 1.0' />
+</testcase>
+</testsuite>

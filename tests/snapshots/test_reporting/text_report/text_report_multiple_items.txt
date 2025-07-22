@@ -1,0 +1,13 @@
+# Eval test-run
+2 items
+
+# All scores
+
+- accuracy
+  avg: 0.8
+  count: 2
+  sum: 1.6
+- precision
+  avg: 0.75
+  count: 2
+  sum: 1.5

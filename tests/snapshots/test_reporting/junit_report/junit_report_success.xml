@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuite name='langfuse-eval' tests='1'>
+<testcase classname='langfuse' name='snapshot-test-item' time='2.5'>
+    <properties>
+        <property name='evals.trace_id' value='snapshot-test-trace' />
+        <property name='evals.cost' value='0.25' />
+        <property name='evals.scores.accuracy.value' value='0.95' />
+        <property name='evals.scores.success.value' value='1.0' />
+    </properties>
+</testcase>
+</testsuite>

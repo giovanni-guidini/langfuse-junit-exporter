@@ -1,0 +1,17 @@
+# Eval test-run
+1 items
+
+# All scores
+
+- accuracy
+  avg: 0.95
+  count: 1
+  sum: 0.95
+- precision
+  avg: 0.88
+  count: 1
+  sum: 0.88
+- recall
+  avg: 0.92
+  count: 1
+  sum: 0.92

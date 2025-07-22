@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuite name='langfuse-eval' tests='2'>
+<testcase classname='langfuse' name='multi-item-1' time='1.5'>
+    <properties>
+        <property name='evals.trace_id' value='multi-trace-1' />
+        <property name='evals.cost' value='0.15' />
+        <property name='evals.scores.success.value' value='1.0' />
+        <property name='evals.scores.accuracy.value' value='0.8' />
+    </properties>
+</testcase>
+<testcase classname='langfuse' name='multi-item-2' time='1.5'>
+    <properties>
+        <property name='evals.trace_id' value='multi-trace-2' />
+        <property name='evals.cost' value='0.15' />
+        <property name='evals.scores.success.value' value='1.0' />
+        <property name='evals.scores.accuracy.value' value='0.8' />
+    </properties>
+</testcase>
+</testsuite>

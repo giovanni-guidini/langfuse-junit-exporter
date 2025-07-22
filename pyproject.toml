@@ -1,0 +1,33 @@
+[project]
+name = "langfuse-junit-exporter"
+version = "0.1.0"
+description = "Exports a Langfuse eval run in JUnit format"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "click>=8.2.1",
+    "langfuse",
+    "python-dotenv>=1.1.1",
+    "tqdm>=4.67.1",
+]
+
+[project.scripts]
+langfuse-reporter = "main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.uv.sources]
+langfuse = { git = "https://github.com/jennmueng/langfuse-python.git", rev = "d7c0127682ddb20f73c5cf4fbb396cdfa8961fc3" }
+
+[dependency-groups]
+dev = [
+    "ruff>=0.12.4",
+    "ty>=0.0.1a15",
+    "pytest>=8.0.0",
+    "pytest-snapshot>=0.9.0",
+]
