@@ -1,5 +1,15 @@
 """
-This module contains functions for getting run reports from Langfuse.
+Langfuse JUnit Exporter - CLI tool for generating reports from Langfuse dataset runs.
+
+This module provides a command-line interface for exporting Langfuse evaluation runs
+in different formats (JUnit XML and text) for integration with CI/CD pipelines
+and reporting systems.
+
+The tool fetches dataset runs from Langfuse, processes the evaluation scores,
+and generates reports that can be used for:
+- CI/CD integration (JUnit XML format)
+- Human-readable summaries (text format)
+
 
 By default, the success-score-name is "did_item_pass".
 """
@@ -17,25 +27,35 @@ def main():
 
 
 @main.command()
-@click.option("--dataset-name", type=str, required=True)
-@click.option("--run-name", type=str, required=True)
+@click.option(
+    "--dataset-name",
+    type=str,
+    required=True,
+    help="Name of the Langfuse dataset containing the evaluation run to report on."
+)
+@click.option(
+    "--run-name",
+    type=str,
+    required=True,
+    help="Name of the specific run within the dataset to generate a report for."
+)
 @click.option(
     "--success-score-name",
     type=str,
     default="did_item_pass",
-    help="The name of the score that indicates wether the item should be considered as 'pass' or 'fail'. It's expected to have values of 0 or 1.",
+    help="Name of the evaluation score that determines if an item passes (value=1) or fails (value=0). Used for JUnit XML test case success/failure classification."
 )
 @click.option(
     "--report-type",
     type=click.Choice(["junit", "text"]),
     default="junit",
-    help="The type of report to generate",
+    help="Format of the generated report. 'junit' produces JUnit XML for CI/CD integration, 'text' produces human-readable summary with aggregated statistics."
 )
 @click.option(
     "--output-file",
     type=str,
     default=None,
-    help="The path to the file where the report should be saved (optional). If not provided, the report is printed to stdout.",
+    help="File path to save the report. If not specified, the report is printed to stdout."
 )
 def report(
     dataset_name: str,
@@ -45,15 +65,33 @@ def report(
     output_file: str | None,
 ):
     """
-    Generate a report for a dataset run and save it to a file or print it to stdout.
+    Generate a report for a Langfuse dataset run in the specified format.
 
-    Arguments:
-        --dataset-name: Name of the dataset to generate the report for (required).
-        --run-name: Name of the run within the dataset (required).
-        --output-file: Path to the file where the report should be saved (optional). If not provided, the report is printed to stdout.
-        --success-fn: Dotted path to a Python function (e.g., "my_module.my_function") that will be used to determine if an item is considered a success. The function should be importable and accept a single argument (the scores for an item). If not provided, all items are considered successful by default.
+    This command fetches the specified dataset run from Langfuse, processes the
+    evaluation scores, and generates a report in either JUnit XML or text format.
+    The report can be saved to a file or printed to stdout for integration with
+    CI/CD pipelines or analysis tools.
 
-    The command fetches the specified dataset run, applies the success function to each item (if provided), and generates a JSON report. The report is either saved to the specified output file or printed to stdout.
+    Report Formats:
+        - JUnit XML: Standard JUnit XML format for CI/CD integration. Each dataset
+          item becomes a test case with properties for trace ID, cost, duration,
+          and all evaluation scores. Failed items (success_score_name != 1) are
+          marked as test failures.
+        
+        - Text: Human-readable format with aggregated statistics. Shows item count,
+          average scores, and detailed breakdown of all evaluation metrics.
+
+    Examples:
+        # Generate JUnit XML report to stdout
+        python main.py report --dataset-name "my-dataset" --run-name "test-run"
+
+        # Generate text report to file
+        python main.py report --dataset-name "my-dataset" --run-name "test-run" \\
+                              --report-type text --output-file "report.txt"
+
+        # Use custom success score name
+        python main.py report --dataset-name "my-dataset" --run-name "test-run" \\
+                              --success-score-name "accuracy"
     """
     if report_type == "junit":
         produce_junit_report(dataset_name, run_name, success_score_name, output_file)
