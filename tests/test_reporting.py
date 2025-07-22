@@ -4,7 +4,7 @@ import tempfile
 import os
 
 from src.reporting import produce_junit_report, produce_text_report, _get_dataset_run_items
-from langfuse.api.resources.commons.errors import NotFoundError
+from langfuse.api.resources.commons.errors import NotFoundError, UnauthorizedError
 from langfuse.api.resources.commons.types.dataset_run_item import DatasetRunItem
 
 
@@ -165,6 +165,38 @@ class TestProduceJunitReport:
         # Verify error message was printed
         captured = capsys.readouterr()
         assert "Run test-run has no items" in captured.out
+
+    @patch("src.reporting.Langfuse")
+    def test_produce_junit_report_unauthorized_error(
+        self, mock_langfuse_class, mock_langfuse, capsys
+    ):
+        """Test produce_junit_report handles UnauthorizedError from Langfuse."""
+        # Setup mocks
+        mock_langfuse_class.return_value = mock_langfuse
+        mock_langfuse.get_dataset_run.side_effect = UnauthorizedError("Invalid credentials")
+
+        # Call function
+        produce_junit_report("test-dataset", "test-run", "success", None)
+
+        # Verify error message was printed
+        captured = capsys.readouterr()
+        assert "Could not access Langfuse. Please check your .env file" in captured.out
+
+    @patch("src.reporting.Langfuse")
+    def test_produce_junit_report_general_exception(
+        self, mock_langfuse_class, mock_langfuse, capsys
+    ):
+        """Test produce_junit_report handles general exceptions from Langfuse."""
+        # Setup mocks
+        mock_langfuse_class.return_value = mock_langfuse
+        mock_langfuse.get_dataset_run.side_effect = Exception("Network timeout")
+
+        # Call function
+        produce_junit_report("test-dataset", "test-run", "success", None)
+
+        # Verify error message was printed
+        captured = capsys.readouterr()
+        assert "Unknown error fetching items: Network timeout" in captured.out
 
     @patch("src.reporting.Langfuse")
     def test_produce_junit_report_multiple_items(

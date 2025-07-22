@@ -4,7 +4,7 @@ from collections import defaultdict
 import click
 
 from langfuse.client import Langfuse
-from langfuse.api.resources.commons.errors import NotFoundError
+from langfuse.api.resources.commons.errors import NotFoundError, UnauthorizedError
 
 from tqdm.auto import tqdm
 
@@ -69,11 +69,17 @@ def produce_text_report(
 def _get_dataset_run_items(
     dataset_name: str, run_name: str
 ) -> list[GenericItemInfo] | None:
-    langfuse = Langfuse()
     try:
+        langfuse = Langfuse()
         run = langfuse.get_dataset_run(dataset_name, run_name)
     except NotFoundError:
         click.secho(f"Run {run_name} not found in dataset {dataset_name}", fg="red")
+        return
+    except UnauthorizedError:
+        click.secho("Could not access Langfuse. Please check your .env file", fg="red")
+        return
+    except Exception as e:
+        click.secho(f"Unknown error fetching items: {e}", fg="red")
         return
 
     dataset_run_items = run.dataset_run_items
